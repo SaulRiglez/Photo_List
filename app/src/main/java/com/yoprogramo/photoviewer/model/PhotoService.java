@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface PhotoService {
 
-    @GET("Photo")
-    Observable<List<Photo>> getContacts();
+    @GET("photos")
+    Observable<List<Photo>> getPhotos();
 
 }
