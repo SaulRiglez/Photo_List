@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
@@ -48,21 +49,23 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
     }
 
     @Override
-    public void onBindViewHolder(PhotosAdapter.PhotoViewHolder holder, int position) {
+    public void onBindViewHolder(final PhotosAdapter.PhotoViewHolder holder, int position) {
 
         Photo photo = this.photosList.get(position);
         holder.tv.setText(photo.getId().toString());
+        holder.progressBarRecycler.setVisibility(View.VISIBLE);
 
         Log.d("url", "onBindViewHolder: " + photo.getThumbnailUrl());
 
         String Bg = photo.getThumbnailUrl().substring(24,photo.getThumbnailUrl().length());
-
 
         Picasso.with(context).load(buildUrl(Bg))
                 .transform(new CircleTransformation())
                 .into(holder.avatarImageview, new Callback() {
                     @Override
                     public void onSuccess() {
+                        holder.progressBarRecycler.setVisibility(View.GONE);
+                        Log.d("exitoso", "onSuccess: ");
 
                     }
 
@@ -88,6 +91,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
         ImageView avatarImageview;
         TextView tv;
+        ProgressBar progressBarRecycler;
 
 
 
@@ -96,6 +100,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
 
             avatarImageview = (ImageView) itemView.findViewById(R.id.image_view);
             tv = (TextView) itemView.findViewById(R.id.text_view);
+            progressBarRecycler = (ProgressBar) itemView.findViewById(R.id.progressBarRecycler) ;
+
 
             itemView.setOnClickListener(this);
         }

@@ -71,7 +71,7 @@ public class Photo implements Parcelable{
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
         @Override
         public Photo createFromParcel(Parcel parcel) {
-            return null;
+            return new Photo(parcel);
         }
 
         @Override

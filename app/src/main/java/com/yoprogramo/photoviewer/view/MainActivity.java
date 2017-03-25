@@ -11,27 +11,31 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.yoprogramo.photoviewer.R;
+import com.yoprogramo.photoviewer.dagger.components.IComponent;
 import com.yoprogramo.photoviewer.entities.Photo;
+import com.yoprogramo.photoviewer.presenter.IPresenter;
+import com.yoprogramo.photoviewer.presenter.MainPresenter;
 import com.yoprogramo.photoviewer.utilities.OnItemClickListener;
 import com.yoprogramo.photoviewer.utilities.PhotosAdapter;
-import com.yoprogramo.photoviewer.utilities.RetrofitHelper;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements OnItemClickListener {
+
+public class MainActivity extends AppCompatActivity implements OnItemClickListener, IView.ImainView {
+
 
 
     List<Photo> photosList = new ArrayList<>();
 
     PhotosAdapter photoAdapter;
+    IPresenter.IMainPresenter iMainPresenter;
 
 
     @BindView(R.id.recycler_view)
@@ -43,7 +47,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        downloadPhotos();
+
+
+
+
 
         photoAdapter = new PhotosAdapter(photosList, this);
         photoAdapter.setClickListener(this);
@@ -52,50 +59,29 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(photoAdapter);
 
+        iMainPresenter = new MainPresenter(this);
+        iMainPresenter.downloadPhotos(photosList);
 
     }
 
-    private void downloadPhotos() {
-
-
-        Observable<List<Photo>> resultObservablePhotos = RetrofitHelper.Factory.createPhotoObservable();
-        Observer observerPhotos = new Observer<List<Photo>>() {
-
-            @Override
-            public void onCompleted() {
-
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(List<Photo> List) {
-
-                for (Photo picture : List) {
-                    photosList.add(picture);
-                }
-
-                photoAdapter.notifyDataSetChanged();
-
-            }
-        };
-
-        resultObservablePhotos.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observerPhotos);
-
-    }
 
     @Override
     public void onClick(View view, int position) {
 
-        Intent intentStartActivity = new Intent(this,DetailActivity.class);
-        Photo picture = photosList.get(position);
-        intentStartActivity.putExtra("picture_detail",picture.getUrl());
-        startActivity(intentStartActivity);
+        iMainPresenter.onItemClicked(view, position);
+    }
 
+    @Override
+    public void notifyAdapter() {
+        photoAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void goToDetailActivity(int position, List<Photo> Pictures) {
+
+        Intent intentStartActivity = new Intent(this, DetailActivity.class);
+        Photo picture = Pictures.get(position);
+        intentStartActivity.putExtra("picture_detail", picture);
+        startActivity(intentStartActivity);
     }
 }
