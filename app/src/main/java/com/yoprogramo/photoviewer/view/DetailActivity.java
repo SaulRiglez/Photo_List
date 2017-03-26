@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -26,18 +27,19 @@ public class DetailActivity extends AppCompatActivity {
     IPresenter.IDetailPresenter iDetailPresenter;
     @BindView(R.id.detailImageView)
     ImageView imageView;
+    @BindView(R.id.text_view_title)
+    TextView tvTitle;
+    @BindView(R.id.text_view_id_picture)
+    TextView tvIdPicture;
 
-   // @BindView(R.id.progressBarDetail)
-    ProgressBar progressBarDetail;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        progressBarDetail = (ProgressBar) findViewById(R.id.progressBar);
-        progressBarDetail.setVisibility(View.VISIBLE);
         ButterKnife.bind(this);
+
         Intent intent = getIntent();
         Photo detailPicture = intent.getParcelableExtra("picture_detail");
         iDetailPresenter = new DetailPresenter();
@@ -56,6 +58,8 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        tvIdPicture.setText(detailPicture.getId().toString());
+        tvTitle.setText(detailPicture.getTitle());
 
     }
 }

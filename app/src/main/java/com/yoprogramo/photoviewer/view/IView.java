@@ -15,6 +15,7 @@ public interface IView {
     public interface ImainView{
         void notifyAdapter();
         void goToDetailActivity(int position, List<Photo> photos);
+
     }
 
     public interface IDetailView{

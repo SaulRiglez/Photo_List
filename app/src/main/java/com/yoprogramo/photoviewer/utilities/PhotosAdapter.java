@@ -3,7 +3,6 @@ package com.yoprogramo.photoviewer.utilities;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import com.squareup.picasso.Picasso;
 import com.yoprogramo.photoviewer.R;
 import com.yoprogramo.photoviewer.entities.Photo;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -55,23 +52,20 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotoViewH
         holder.tv.setText(photo.getId().toString());
         holder.progressBarRecycler.setVisibility(View.VISIBLE);
 
-        Log.d("url", "onBindViewHolder: " + photo.getThumbnailUrl());
 
         String Bg = photo.getThumbnailUrl().substring(24,photo.getThumbnailUrl().length());
 
-        Picasso.with(context).load(buildUrl(Bg))
+        Picasso.with(context).load(buildUrl(Bg)).placeholder(R.mipmap.ic_placeholder)
                 .transform(new CircleTransformation())
                 .into(holder.avatarImageview, new Callback() {
                     @Override
                     public void onSuccess() {
                         holder.progressBarRecycler.setVisibility(View.GONE);
-                        Log.d("exitoso", "onSuccess: ");
 
                     }
 
                     @Override
                     public void onError( ) {
-                        Log.d("picasso", "onError: "+  "picasso");
 
 
                     }
